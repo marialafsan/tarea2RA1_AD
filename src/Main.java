@@ -23,7 +23,9 @@ public class Main {
 
             } else if (input1.equals("2")) {
 
-                //ejercicio2();
+                ejercicio2(scanner);
+                System.out.println();
+                menuEjercicios();
 
             } else if (input1.equals("3")){
 
@@ -144,10 +146,43 @@ public class Main {
             System.out.println("Error: " + e);
         }
 
+    }
+
+    public static void ejercicio2(Scanner scanner) throws IOException{
+
+        try (RandomAccessFile raf = new RandomAccessFile("nums.bin", "rw")){
+
+            raf.setLength(0);
+
+            System.out.println("Vamos a guardar tus 5 números favoritos en un fichero. Escribe cada uno y pulsa Enter: ");
+            int [] favoritos= new int[5];
+
+            for (int i = 0; i < 5; i++){
+                favoritos[i] = scanner.nextInt();
+            }
+
+            for (int i = 0; i < 5; i++){
+                raf.writeInt(favoritos[i]);
+            }
+
+            scanner.nextLine(); //lectura del último salto de línea
+
+            System.out.println();
+            System.out.println("Ahora vamos a leerlos desde el fichero binario.");
+            System.out.println("Tus números favoritos son: ");
+
+            raf.seek(0); //devolvemos el puntero al inicio del fichero
+
+            while (raf.getFilePointer() < raf.length()){
+                int numero = raf.readInt();
+                System.out.print(numero + " | ");
+            }
 
 
 
-
+        }catch (IOException e){
+            System.out.println("Error: " + e.getMessage());
+        }
 
 
 
