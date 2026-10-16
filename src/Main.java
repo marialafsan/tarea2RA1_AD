@@ -54,7 +54,7 @@ public class Main {
 
             } else if (input1.equals("7")){
 
-                //ejercicio7();
+                ejercicio7();
                 System.out.println();
                 menuEjercicios();
 
@@ -493,6 +493,12 @@ public class Main {
         }catch (IOException e){
             System.out.println("Error: " + e.getMessage());
         }
+
+
+    }
+
+    public static void ejercicio7(){
+
 
 
     }
