@@ -53,7 +53,7 @@ public class Main {
 
             } else if (input1.equals("7")){
 
-                ejercicio7();
+                ejercicio7(scanner);
                 System.out.println();
                 menuEjercicios();
 
@@ -497,7 +497,7 @@ public class Main {
 
     }
 
-    public static void ejercicio7(){
+    public static void ejercicio7(Scanner scanner){
 
         //Creación de un índice auxiliar para evitar recorrer el fichero principal completo cada vez
         //personas.dat -> registro de long. fija: id + nombre(10caracteres) + edad -> 48 bytes
@@ -520,7 +520,7 @@ public class Main {
 
         int tam_registro = 4 + 10*2 + 4; //el tamaño de cada registro de personas.dat es de 28 bytes
         int tam_reg_indice = 4 + 8; //el tamaño de cada registro del indice es de 12 bytes (int + long)
-        int numero_registros = 4;
+        int numero_registros = 3;
 
 
         /* Creación del índice */
@@ -543,12 +543,17 @@ public class Main {
                 raf_indice.writeLong(offset); //guardamos el id y el offset en el índice
 
                 System.out.println();
-                System.out.println("Índice " + (i+1) + ": | ID: " + id + " | Offset: " + offset + " | Posición puntero: " + raf_indice.getFilePointer());
+                System.out.println("Índice " + (i+1) + ": | ID: " + id + " | Offset: " + offset + " | Posición puntero en índice: " + raf_indice.getFilePointer());
 
             }
 
+            System.out.println();
             System.out.println("Índice creado correctamente.");
             System.out.println();
+
+            System.out.println("A continuación buscaremos un ID concreto usando el índice.\n Introduce el ID que quieras buscar: ");
+
+
 
 
 
