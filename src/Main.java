@@ -499,7 +499,65 @@ public class Main {
 
     public static void ejercicio7(){
 
+        //Creación de un índice auxiliar para evitar recorrer el fichero principal completo cada vez
+        //personas.dat -> registro de long. fija: id + nombre(10caracteres) + edad -> 48 bytes
+        //personas.idx -> par: id + offset (long) -> 4 + 8 = 12 bytes
 
+        System.out.println("Comprobando que el fichero 'personas.dat' existe...");
+        System.out.println();
+
+        File datosPersonas = new File ("personas.dat");
+        File indicePersonas = new File ("personas.idx");
+
+        if (!datosPersonas.exists() || datosPersonas.length() == 0){ //Como depende del ejercicio anterior, si el fichero no existe o está borrado saldremos del ejercicio;
+            System.out.println("El fichero 'personas.dat' no existe, ejecuta primero el ejercicio 6");
+            return; //volvemos al menú
+        }
+
+        System.out.println("Creando índice a partir del fichero 'personas.dat'...");
+
+        /* Cálculos registros */
+
+        int tam_registro = 4 + 10*2 + 4; //el tamaño de cada registro de personas.dat es de 28 bytes
+        int tam_reg_indice = 4 + 8; //el tamaño de cada registro del indice es de 12 bytes (int + long)
+        int numero_registros = 4;
+
+
+        /* Creación del índice */
+
+        try (RandomAccessFile raf_personas = new RandomAccessFile(datosPersonas, "r")){
+
+            RandomAccessFile raf_indice = new RandomAccessFile(indicePersonas, "rw"); //creamos el doc del índice
+
+            raf_indice.setLength(0); //lo dejamos limpio
+
+            for (int i = 0; i < numero_registros; i++){
+
+                long offset = i * (long) tam_registro; //comienzo de cada registro en raf_personas
+
+                raf_personas.seek(offset); //colocamos el puntero en el comienzo del registro de raf_personas
+
+                int id = raf_personas.readInt(); //guardamos el id de cada registro
+
+                raf_indice.writeInt(id);
+                raf_indice.writeLong(offset); //guardamos el id y el offset en el índice
+
+                System.out.println();
+                System.out.println("Índice " + (i+1) + ": | ID: " + id + " | Offset: " + offset + " | Posición puntero: " + raf_indice.getFilePointer());
+
+            }
+
+            System.out.println("Índice creado correctamente.");
+            System.out.println();
+
+
+
+
+
+
+        }catch (IOException e){
+        System.out.println("Error: " + e.getMessage());
+    }
 
     }
 }
