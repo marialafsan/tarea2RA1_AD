@@ -48,7 +48,7 @@ public class Main {
 
             } else if (input1.equals("6")){
 
-                //ejercicio6();
+                ejercicio6(scanner);
                 System.out.println();
                 menuEjercicios();
 
@@ -373,6 +373,127 @@ public class Main {
         }catch (IOException e){
             System.out.println("Error: " + e.getMessage());
         }
+
+    }
+
+    public static void ejercicio6(Scanner scanner){
+
+        try (RandomAccessFile raf = new RandomAccessFile("personas.dat", "rw")){
+
+            raf.setLength(0); //Borra el contenido anterior
+
+            //Contenido de los registros:
+
+            int [] ids = {1, 2, 3};
+            String [] nombres = {"María", "José", "Andrés"};
+            int [] edades = {30, 45, 37};
+            int tam_registro = 4 + 10*2 + 4; //el tamaño de cada registro es de 28 bytes
+            int offset_edad = 4 + 20; //la edad empieza en el Byte 24, tras el id (4 Bytes) y el nombre (20 Bytes)
+
+            //Establecemos la longitud del nombre:
+            int longNombre = 10;
+
+            System.out.println("Vamos a guardar los siguientes registros en un fichero binario: ");
+            System.out.println();
+
+            for (int i = 0; i < 3; i++){
+
+                System.out.println("ID: " + ids[i] + " | Nombre: " + nombres [i] + " | Edad: " + edades [i]);
+
+            }
+
+            raf.seek(0); //Colocamos el puntero en la posición 0
+
+            for (int i = 0; i < 3; i++){
+
+                raf.writeInt(ids[i]); // escribimos el id
+
+                System.out.println("Id posición " + (i+1) + " escrito en fichero. Posición puntero: " + raf.getFilePointer());
+
+                //Creamos el StringBuffer para guardar el nombre del registro actual
+                StringBuffer sb = new StringBuffer (nombres[i]);
+
+                sb.setLength(longNombre); //recortamos los caracteres del nombre a 10
+
+                raf.writeChars(sb.toString());
+
+                System.out.println("Nombre posición " + (i+1) + " escrito en fichero. Posición puntero: " + raf.getFilePointer());
+
+                raf.writeInt(edades[i]);
+
+                System.out.println("Edad posición " + (i+1) + " escrito en fichero. Posición puntero: " + raf.getFilePointer());
+
+                System.out.println("Registro " + (i+1) + " escrito correctamente");
+                System.out.println();
+
+            }
+
+            System.out.println("Datos escritos en el fichero binario");
+
+            System.out.println("Introduce el id de un registro al que quieras modificar la edad: ");
+            System.out.print("ID: ");
+            int inputId = scanner.nextInt();
+
+            System.out.println("Nueva edad: ");
+            int inputEdad = scanner.nextInt();
+
+            System.out.println("Recorreremos el fichero hasta encontrar el ID y modificaremos la edad con el nuevo dato");
+
+            raf.seek(0); //devolvemos el puntero al comienzo del archivo
+
+            int lectorId = -1; //lo usaremos para leer los ids recorriendo el archivo
+            int i = 0; //posiciones de la id
+            long posicionId = 1L ;
+            long comienzoRegistro = 1L;
+
+            raf.seek(0);
+
+            while (raf.getFilePointer() < raf.length()){
+
+                comienzoRegistro = raf.getFilePointer();
+                lectorId = raf.readInt();
+                if (lectorId == inputId){
+                    posicionId = raf.getFilePointer() ; //guardamos la posicion en la que comienza el nombre en el registro
+                    break;
+                }
+                raf.seek(comienzoRegistro + tam_registro); //vamos al comienzo del siguiente registro
+            }
+
+            if (lectorId == inputId){
+
+                raf.seek(raf.getFilePointer() + 20); //colocamos el puntero en la edad, tras el nombre
+                raf.writeInt(inputEdad);
+                System.out.println("Edad modificada correctamente");
+                System.out.println();
+                System.out.println("Lectura del registro para comprobar la correcta modificación del mismo: ");
+                System.out.println();
+
+                raf.seek(posicionId); //Colocamos el puntero a la altura del nombre de la id pedida
+
+                int id1 = inputId;
+
+                char[] caracteres1 = new char[longNombre];
+                for (int j = 0; j < longNombre; j++) {
+                    caracteres1[j] = raf.readChar();
+                }
+                String nombre1 = new String(caracteres1).trim();
+
+                int edad1 = raf.readInt();
+
+                System.out.println("ID: " + id1 + " | Nombre: " + nombre1 + " | Edad: " + edad1);
+                System.out.println();
+
+
+
+            } else {
+                System.out.println("No se ha encontrado ningún registro con el ID: " + inputId);
+            }
+
+
+        }catch (IOException e){
+            System.out.println("Error: " + e.getMessage());
+        }
+
 
     }
 }
