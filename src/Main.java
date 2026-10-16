@@ -1,4 +1,5 @@
 import java.io.File;
+import java.sql.SQLOutput;
 import java.util.*;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -29,7 +30,9 @@ public class Main {
 
             } else if (input1.equals("3")){
 
-                //ejercicio3();
+                ejercicio3();
+                System.out.println();
+                menuEjercicios();
 
             } else if (input1.equals("4")){
 
@@ -180,11 +183,58 @@ public class Main {
 
 
 
+
         }catch (IOException e){
             System.out.println("Error: " + e.getMessage());
         }
 
+    }
 
+    public static void ejercicio3(){
+
+
+        //Acceso directo a slots de 4 bytes
+
+        long tam_slot = 4L; //cada entero ocupa 4 bytes
+
+        try (RandomAccessFile raf = new RandomAccessFile("slots.bin", "rw")){
+
+            raf.setLength(0);
+
+            int [] favoritos= {22, 34, 45, 67, 267}; //para hacerlo más rápido, vamos a establecer los 5 números sin pedir completar el ejercicio 2
+
+            System.out.println("Números a escribir en el fichero: ");
+            for (int fav : favoritos){
+                System.out.print(fav + " | ");
+            }
+
+            System.out.println();
+            System.out.println();
+            System.out.println("Escribiendo en el fichero...");
+            System.out.println();
+
+
+            for (int i = 0; i < favoritos.length; i++){
+
+                long offset = tam_slot * i;
+                raf.seek(offset); //colocamos el puntero en la posición con el offset para escribir el número
+                raf.writeInt(favoritos[i]);
+            }
+
+            System.out.println("Números escritos correctamente");
+
+            raf.seek(tam_slot);
+
+            int valorSegPos = raf.readInt();
+
+            System.out.println();
+            System.out.println("Lectura del segundo valor desde el fichero binario: " + valorSegPos);
+
+
+
+        }catch (IOException e){
+            System.out.println("Error: " + e.getMessage());
+        }
 
     }
 }
