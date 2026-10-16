@@ -459,6 +459,7 @@ public class Main {
 
             if (lectorId == inputId){
 
+                //el puntero ha quedado justo detrás de la id tras leerla
                 raf.seek(raf.getFilePointer() + 20); //colocamos el puntero en la edad, tras el nombre
                 raf.writeInt(inputEdad);
                 System.out.println("Edad modificada correctamente");
@@ -484,6 +485,7 @@ public class Main {
 
 
             } else {
+                System.out.println();
                 System.out.println("No se ha encontrado ningún registro con el ID: " + inputId);
             }
 
