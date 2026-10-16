@@ -375,5 +375,18 @@ public class Main {
         }
 
     }
+
+    public static void ejercicio6(){
+
+        try (RandomAccessFile raf = new RandomAccessFile("personas.dat", "rw")){
+
+            int [] ids = {1, 2, 3};
+
+        }catch (IOException e){
+            System.out.println("Error: " + e.getMessage());
+        }
+
+
+    }
 }
 
