@@ -42,7 +42,7 @@ public class Main {
 
             } else if (input1.equals("5")) {
 
-                //ejercicio5();
+                ejercicio5();
                 System.out.println();
                 menuEjercicios();
 
@@ -290,6 +290,76 @@ public class Main {
 
                 System.out.print(raf.readUTF() + " ");
             }
+
+        }catch (IOException e){
+            System.out.println("Error: " + e.getMessage());
+        }
+
+    }
+
+    public static void ejercicio5(){
+
+        //Registro: Definir un registro con id (int, 4 bytes) y un nombre (10 caracteres, cada char 2 bytes)
+
+        try (RandomAccessFile raf = new RandomAccessFile("registros.bin", "rw")){
+
+            raf.setLength(0);
+
+            int [] ids = {23, 34, 56};
+            String [] nombres= {"Ana", "Jesús", "Álvaro"};
+
+            //Definimos la longitud del nombre: 10 caracteres
+
+            int longNombre = 10;
+
+            int tam_registro = 4 + longNombre * 2; // int -> 4 bytes; char -> 2 bytes. TAM_REGISTRO = 24 BYTES
+
+            raf.seek(0);
+
+            for(int i = 0; i < ids.length; i++){
+
+                System.out.println("Comienzo registro " + (i+1) + " | Posición puntero: " + raf.getFilePointer());
+
+                raf.writeInt(ids[i]);
+
+                System.out.println("Comienzo del nombre. Posición puntero: " + raf.getFilePointer());
+
+                StringBuffer sBuffer = new StringBuffer(nombres[i]);
+                sBuffer.setLength(longNombre);
+                // ^ lo recortamos a la longitud establecida
+                raf.writeChars(sBuffer.toString());
+
+                System.out.println("Aquí acaba el registro " + (i+1) + " | Posición puntero: " + raf.getFilePointer());
+                System.out.println();
+
+            }
+
+            raf.seek(0); //devolvemos el puntero al comienzo del fichero
+
+            System.out.println("Registros escritos correctamente en el fichero");
+            System.out.println();
+
+            System.out.println("Lectura del nombre en el tercer registro: ");
+
+            int posicionRegistro3 = 24*2; //comienzo del 3er registro -> Byte 48
+
+            char[] nombre = new char[10];
+            int i = 0;
+
+            raf.seek(posicionRegistro3); //colocamos el puntero para leer el tercer registro
+
+            int id = raf.readInt();
+
+            while (raf.getFilePointer() < 20){
+
+                nombre[i] = raf.readChar();
+                i=+2;
+
+            }
+
+            String cadenaNombre = nombre.toString();
+
+            System.out.print(id + " " + cadenaNombre);
 
         }catch (IOException e){
             System.out.println("Error: " + e.getMessage());
