@@ -36,8 +36,27 @@ public class Main {
 
             } else if (input1.equals("4")){
 
-                //ejercicio4();
+                ejercicio4();
+                System.out.println();
+                menuEjercicios();
 
+            } else if (input1.equals("5")) {
+
+                //ejercicio5();
+                System.out.println();
+                menuEjercicios();
+
+            } else if (input1.equals("6")){
+
+                //ejercicio6();
+                System.out.println();
+                menuEjercicios();
+
+            } else if (input1.equals("7")){
+
+                //ejercicio7();
+                System.out.println();
+                menuEjercicios();
 
 
             } else if (input1.equalsIgnoreCase("exit")) {
@@ -192,7 +211,6 @@ public class Main {
 
     public static void ejercicio3(){
 
-
         //Acceso directo a slots de 4 bytes
 
         long tam_slot = 4L; //cada entero ocupa 4 bytes
@@ -223,6 +241,9 @@ public class Main {
 
             System.out.println("Números escritos correctamente");
 
+
+            System.out.println("Calculamos la posición del segundo slot para leer el número utilizando el puntero y calculando que cada entero ocupa 4 Bytes. \n El segundo entero empezará en el Byte número 4 ya que: \n El primer entero se encuentra del byte 0 al byte 3, ocupando 4 bytes.");
+
             raf.seek(tam_slot);
 
             int valorSegPos = raf.readInt();
@@ -231,6 +252,44 @@ public class Main {
             System.out.println("Lectura del segundo valor desde el fichero binario: " + valorSegPos);
 
 
+        }catch (IOException e){
+            System.out.println("Error: " + e.getMessage());
+        }
+
+    }
+
+    public static void ejercicio4(){
+
+
+        try (RandomAccessFile raf = new RandomAccessFile("nombres.bin", "rw")){
+
+            raf.setLength(0);
+
+            String [] nombres= {"Ana", "Jesús", "Álvaro"};
+
+            System.out.println("\n Al utilizar writeUTF y readUTF vamos a tener que leer todo el fichero hasta llegar a la posición buscada. " +
+                    "\n Es muy cómodo y sabe dónde acaba y empieza cada registro, pero no nos permite acceder con puntero, sólo sirve para Acceso Secuencial \n" +
+                    "\n Vamos a escribir los siguientes nombres de manera secuencial en un documento binario utilizando writeUTF:");
+
+            for (String nombre : nombres){
+
+                System.out.print(nombre + " ");
+
+                raf.writeUTF(nombre);
+            }
+
+            System.out.println("\n");
+            System.out.println("Nombres escritos en el fichero correctamente.");
+
+            raf.seek(0); //devolvemos el puntero al comienzo del fichero
+
+            System.out.println();
+            System.out.println("Ahora leemos los nombres secuencialmente desde el fichero: ");
+
+            while (raf.getFilePointer()< raf.length()){
+
+                System.out.print(raf.readUTF() + " ");
+            }
 
         }catch (IOException e){
             System.out.println("Error: " + e.getMessage());
