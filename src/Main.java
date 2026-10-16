@@ -1,4 +1,5 @@
 import java.io.File;
+import java.sql.SQLOutput;
 import java.util.*;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -497,10 +498,10 @@ public class Main {
 
     }
 
-    public static void ejercicio7(Scanner scanner){
+    public static void ejercicio7(Scanner scanner) throws IOException {
 
         //Creación de un índice auxiliar para evitar recorrer el fichero principal completo cada vez
-        //personas.dat -> registro de long. fija: id + nombre(10caracteres) + edad -> 48 bytes
+        //personas.dat -> registro de long. fija: id + nombre(10caracteres) + edad -> 28 bytes
         //personas.idx -> par: id + offset (long) -> 4 + 8 = 12 bytes
 
         System.out.println("Comprobando que el fichero 'personas.dat' existe...");
@@ -553,10 +554,66 @@ public class Main {
 
             System.out.println("A continuación buscaremos un ID concreto usando el índice.\n Introduce el ID que quieras buscar: ");
 
+            int input_id = scanner.nextInt();
+            scanner.nextLine();
 
+            raf_indice.seek(0); //devolvemos el puntero a la posición 0 del índice
+            int puntero = 0;
+            int idLeido = -1;
+            long offsetInput = 1L;
 
+            while (raf_indice.getFilePointer() < raf_indice.length()){
 
+                raf_indice.seek(puntero); //colocamos el puntero al comienzo del fichero del índice
+                idLeido = raf_indice.readInt();
 
+                if (idLeido == input_id){
+                    offsetInput = raf_indice.readLong();
+                    break;
+                }
+
+                //Movemos el puntero:
+
+                puntero += tam_reg_indice; //movemos el puntero hasta el comienzo del siguiente registro
+
+            }
+            if (idLeido == -1){
+                System.out.println("El ID introducido no se encuentra en el registro");
+                return;
+            }
+
+            /* Ahora que tenemos el índice y el offset, encontremos el registro buscado */
+
+            System.out.println("Id " + idLeido + " encontrado. Offset: " + offsetInput);
+            System.out.println();
+
+            raf_personas.seek(offsetInput); //llevamos el puntero al inicio del registro usando el offset
+
+            long final_registro_buscado = offsetInput + tam_registro;
+
+            int id = 0;
+            char [] caracteres = new char[10];
+            int edad = 0;
+            String nombre = "";
+
+            while (raf_personas.getFilePointer() < final_registro_buscado){
+
+                id = raf_personas.readInt();
+
+                for (int i = 0; i < caracteres.length; i++){
+
+                    caracteres[i] = raf_personas.readChar();
+
+                }
+
+                nombre = new String (caracteres).trim();
+                // ^^ Importante añadir new String a la hora de convertir una cadena de caracteres a String!!
+
+                edad = raf_personas.readInt();
+
+            }
+
+            System.out.println("Encontrado el registro usando el índice: \n ID: " + id + " | Nombre: " + nombre + " | Edad: " + edad);
 
 
 
