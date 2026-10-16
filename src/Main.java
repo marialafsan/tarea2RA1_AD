@@ -42,7 +42,7 @@ public class Main {
 
             } else if (input1.equals("5")) {
 
-                //ejercicio5();
+                ejercicio5();
                 System.out.println();
                 menuEjercicios();
 
@@ -290,6 +290,85 @@ public class Main {
 
                 System.out.print(raf.readUTF() + " ");
             }
+
+        }catch (IOException e){
+            System.out.println("Error: " + e.getMessage());
+        }
+
+    }
+
+    public static void ejercicio5(){
+
+        //Registro: Definir un registro con id (int, 4 bytes) y un nombre (10 caracteres, cada char 2 bytes)
+
+        try (RandomAccessFile raf = new RandomAccessFile("registros.bin", "rw")){
+
+            raf.setLength(0);
+
+            int [] ids = {23, 34, 56};
+            String [] nombres= {"Ana", "Jesús", "Álvaro"};
+
+            System.out.println("Vamos a introducir los siguientes registros en un fichero binario: ");
+            System.out.println();
+
+            for (int i = 0; i < 3; i++){
+                System.out.println("ID empleado: " + ids[i] + " | Nombre empleado: " + nombres[i]);
+            }
+
+            //Definimos la longitud del nombre: 10 caracteres
+
+            int longNombre = 10;
+
+            int tam_registro = 4 + longNombre * 2; // int -> 4 bytes; char -> 2 bytes. TAM_REGISTRO = 24 BYTES
+
+            System.out.println();
+            System.out.println("Seguiremos la posición del puntero mientras escribe los registros en el fichero binario, para ilustrar cuántos bytes van ocupando el id, el nombre y el total del registro: ");
+            System.out.println();
+
+            raf.seek(0);
+
+            for(int i = 0; i < ids.length; i++){
+
+                System.out.println("Comienzo registro " + (i+1) + " | Posición puntero: " + raf.getFilePointer());
+
+                raf.writeInt(ids[i]);
+
+                System.out.println("Comienzo del nombre. Posición puntero: " + raf.getFilePointer());
+
+                StringBuffer sBuffer = new StringBuffer(nombres[i]);
+                sBuffer.setLength(longNombre);
+                // ^ lo recortamos a la longitud establecida
+                raf.writeChars(sBuffer.toString());
+
+                System.out.println("Aquí acaba el registro " + (i+1) + " | Posición puntero: " + raf.getFilePointer());
+                System.out.println();
+
+            }
+
+            raf.seek(0); //devolvemos el puntero al comienzo del fichero
+
+            System.out.println("Registros escritos correctamente en el fichero");
+            System.out.println();
+
+            System.out.println("Para leer el nombre del tercer registro tendremos que colocar el puntero al comienzo del registro 3, pasados los 4 bytes que ocupa el id.");
+            System.out.println();
+
+            System.out.println("Lectura del nombre en el tercer registro... ");
+            System.out.println();
+
+            int posicionRegistro3 = 24*2; //comienzo del 3er registro -> Byte 48
+
+            raf.seek(posicionRegistro3 + 4); //colocamos el puntero para leer el nombre en el tercer registro (tras el id que ocupa 4 bytes)
+
+            char[] caracteres = new char[longNombre];
+
+            for (int i = 0; i < longNombre; i++) {
+                caracteres[i] = raf.readChar();
+            }
+
+            String nombre = new String(caracteres).trim(); //Usamos trim para eliminar los espacios al final del nombre
+
+            System.out.println("Nombre del registro 3: " + nombre);
 
         }catch (IOException e){
             System.out.println("Error: " + e.getMessage());
