@@ -308,11 +308,22 @@ public class Main {
             int [] ids = {23, 34, 56};
             String [] nombres= {"Ana", "Jesús", "Álvaro"};
 
+            System.out.println("Vamos a introducir los siguientes registros en un fichero binario: ");
+            System.out.println();
+
+            for (int i = 0; i < 3; i++){
+                System.out.println("ID empleado: " + ids[i] + " | Nombre empleado: " + nombres[i]);
+            }
+
             //Definimos la longitud del nombre: 10 caracteres
 
             int longNombre = 10;
 
             int tam_registro = 4 + longNombre * 2; // int -> 4 bytes; char -> 2 bytes. TAM_REGISTRO = 24 BYTES
+
+            System.out.println();
+            System.out.println("Seguiremos la posición del puntero mientras escribe los registros en el fichero binario, para ilustrar cuántos bytes van ocupando el id, el nombre y el total del registro: ");
+            System.out.println();
 
             raf.seek(0);
 
@@ -339,27 +350,25 @@ public class Main {
             System.out.println("Registros escritos correctamente en el fichero");
             System.out.println();
 
-            System.out.println("Lectura del nombre en el tercer registro: ");
+            System.out.println("Para leer el nombre del tercer registro tendremos que colocar el puntero al comienzo del registro 3, pasados los 4 bytes que ocupa el id.");
+            System.out.println();
+
+            System.out.println("Lectura del nombre en el tercer registro... ");
+            System.out.println();
 
             int posicionRegistro3 = 24*2; //comienzo del 3er registro -> Byte 48
 
-            char[] nombre = new char[10];
-            int i = 0;
+            raf.seek(posicionRegistro3 + 4); //colocamos el puntero para leer el nombre en el tercer registro (tras el id que ocupa 4 bytes)
 
-            raf.seek(posicionRegistro3); //colocamos el puntero para leer el tercer registro
+            char[] caracteres = new char[longNombre];
 
-            int id = raf.readInt();
-
-            while (raf.getFilePointer() < 20){
-
-                nombre[i] = raf.readChar();
-                i=+2;
-
+            for (int i = 0; i < longNombre; i++) {
+                caracteres[i] = raf.readChar();
             }
 
-            String cadenaNombre = nombre.toString();
+            String nombre = new String(caracteres).trim(); //Usamos trim para eliminar los espacios al final del nombre
 
-            System.out.print(id + " " + cadenaNombre);
+            System.out.println("Nombre del registro 3: " + nombre);
 
         }catch (IOException e){
             System.out.println("Error: " + e.getMessage());
