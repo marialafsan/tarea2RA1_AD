@@ -1,5 +1,4 @@
 import java.io.File;
-import java.sql.SQLOutput;
 import java.util.*;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -84,7 +83,7 @@ public class Main {
         System.out.println("-----------");
     }
 
-    public static void ejercicio1 () throws IOException {
+    public static void ejercicio1 () {
 
     //Empleados Binarios
 
@@ -170,7 +169,7 @@ public class Main {
 
     }
 
-    public static void ejercicio2(Scanner scanner) throws IOException{
+    public static void ejercicio2(Scanner scanner){
 
         try (RandomAccessFile raf = new RandomAccessFile("nums.bin", "rw")){
 
@@ -442,7 +441,6 @@ public class Main {
             raf.seek(0); //devolvemos el puntero al comienzo del archivo
 
             int lectorId = -1; //lo usaremos para leer los ids recorriendo el archivo
-            int i = 0; //posiciones de la id
             long posicionId = 1L ;
             long comienzoRegistro = 1L;
 
